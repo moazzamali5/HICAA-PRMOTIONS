@@ -11,7 +11,7 @@ import {
 } from './firebase-config.js';
 
 // Admin password (in a real application, this should be handled server-side)
-const ADMIN_PASSWORD = "hicca123"; // You can change this password
+const ADMIN_PASSWORD = "bananacheese"; // You can change this password
 
 // DOM Elements
 const promotionsGrid = document.getElementById('promotionsGrid');
