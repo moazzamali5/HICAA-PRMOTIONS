@@ -1,0 +1,481 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('back.jpeg');
+    background-size: cover;
+    background-position: center;
+    filter: blur(5px);
+    z-index: -1;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 3rem;
+    animation: fadeInDown 1s ease-out;
+}
+
+.welcome-text {
+    font-size: 3.5rem;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    margin-bottom: 1rem;
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.filter-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    backdrop-filter: blur(5px);
+}
+
+.filter-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.filter-btn.active {
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(1.05);
+}
+
+.promotions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.promotion-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    animation: fadeInUp 0.5s ease-out;
+    position: relative;
+    cursor: pointer;
+}
+
+.promotion-card:hover {
+    transform: translateY(-5px);
+}
+
+.promotion-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.promotion-content {
+    padding: 1.5rem;
+}
+
+.promotion-text {
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.promotion-branches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.branch-tag {
+    background: rgba(0, 0, 0, 0.1);
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    color: #333;
+}
+
+.add-promotion-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    z-index: 100;
+}
+
+.add-promotion-btn:hover {
+    transform: scale(1.1);
+    background: #45a049;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.modal-content {
+    position: relative;
+    background: white;
+    width: 90%;
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: 15px;
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+.close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: #333;
+    transform: rotate(90deg);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.branch-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 1rem;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+}
+
+.submit-btn:hover {
+    background: #45a049;
+}
+
+/* Animations */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .welcome-text {
+        font-size: 2.5rem;
+    }
+    
+    .subtitle {
+        font-size: 1.2rem;
+    }
+    
+    .filter-container {
+        gap: 0.5rem;
+    }
+    
+    .filter-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.cancel-btn {
+    padding: 0.8rem 1.5rem;
+    background: #f44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.cancel-btn:hover {
+    background: #d32f2f;
+}
+
+.delete-btn {
+    padding: 0.8rem 1.5rem;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.delete-btn:hover {
+    background: #45a049;
+}
+
+.delete-icon {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    color: #f44336;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 0.5rem;
+    border-radius: 50%;
+}
+
+.promotion-card:hover .delete-icon {
+    opacity: 1;
+}
+
+/* Success Modal Styles */
+.success-modal {
+    text-align: center;
+    max-width: 400px;
+    padding: 2rem;
+}
+
+.success-icon {
+    font-size: 4rem;
+    color: #4CAF50;
+    margin-bottom: 1rem;
+    animation: scaleIn 0.3s ease-out;
+}
+
+.success-modal h2 {
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-size: 1.8rem;
+}
+
+.success-modal p {
+    color: #666;
+    margin-bottom: 1.5rem;
+}
+
+.close-success-btn,
+.close-delete-success-btn {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.close-success-btn:hover,
+.close-delete-success-btn:hover {
+    background: #45a049;
+    transform: translateY(-2px);
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* View Promotion Modal Styles */
+.view-promotion-modal {
+    max-width: 800px;
+    padding: 0;
+    overflow: hidden;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.view-promotion-image {
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.view-promotion-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.view-promotion-content {
+    padding: 2rem;
+    overflow-y: auto;
+    max-height: calc(90vh - 300px);
+    -webkit-overflow-scrolling: touch;
+}
+
+.view-promotion-content h2 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.view-promotion-content h3 {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}
+
+.view-promotion-content p {
+    color: #444;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    white-space: pre-wrap;
+}
+
+.view-promotion-branches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+/* Promotion Card Styles Update */
+.promotion-card {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.promotion-card:hover {
+    transform: translateY(-5px);
+}
+
+.promotion-content h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.promotion-content p {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+} 

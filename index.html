@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hicca Promotions</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="background"></div>
+    <div class="container">
+        <header>
+            <h1 class="welcome-text">Welcome to Hicaa Promotions</h1>
+            <p class="subtitle">Discover amazing deals and offers</p>
+        </header>
+
+        <div class="filter-container">
+            <button class="filter-btn active" data-filter="all">ALL</button>
+            <button class="filter-btn" data-filter="icom">ICOM SQUARE</button>
+            <button class="filter-btn" data-filter="batu-kawa">BATU KAWA</button>
+            <button class="filter-btn" data-filter="eion-mall">EION MALL</button>
+            <button class="filter-btn" data-filter="emporium">EMPORIUM</button>
+        </div>
+
+        <div class="promotions-grid" id="promotionsGrid">
+            <!-- Promotions will be dynamically added here -->
+        </div>
+
+        <button class="add-promotion-btn" id="addPromotionBtn">
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
+
+    <!-- Password Verification Modal -->
+    <div class="modal" id="passwordModal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Admin Verification</h2>
+            <form id="passwordForm">
+                <div class="form-group">
+                    <label for="adminPassword">Admin Password</label>
+                    <input type="password" id="adminPassword" required>
+                </div>
+                <button type="submit" class="submit-btn">Verify</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Promotion Modal -->
+    <div class="modal" id="promotionModal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Add New Promotion</h2>
+            <form id="promotionForm">
+                <div class="form-group">
+                    <label for="promotionImage">Promotion Image</label>
+                    <input type="file" id="promotionImage" accept="image/*" required>
+                </div>
+                <div class="form-group">
+                    <label for="promotionHeading">Promotion Heading</label>
+                    <input type="text" id="promotionHeading" required placeholder="Enter promotion heading">
+                </div>
+                <div class="form-group">
+                    <label for="promotionTitle">Promotion Title</label>
+                    <input type="text" id="promotionTitle" required placeholder="Enter a short title">
+                </div>
+                <div class="form-group">
+                    <label for="promotionDescription">Promotion Description</label>
+                    <textarea id="promotionDescription" required placeholder="Enter full promotion details"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Branches</label>
+                    <div class="branch-checkboxes">
+                        <label><input type="checkbox" name="branch" value="icom"> ICOM</label>
+                        <label><input type="checkbox" name="branch" value="batu-kawa"> BATU KAWA</label>
+                        <label><input type="checkbox" name="branch" value="eion-mall"> EION MALL</label>
+                        <label><input type="checkbox" name="branch" value="emporium"> EMPORIUM</label>
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn">Post Promotion</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- View Promotion Modal -->
+    <div class="modal" id="viewPromotionModal">
+        <div class="modal-content view-promotion-modal">
+            <span class="close-btn">&times;</span>
+            <div class="view-promotion-image">
+                <img id="viewPromotionImage" src="" alt="Promotion">
+            </div>
+            <div class="view-promotion-content">
+                <h2 id="viewPromotionHeading"></h2>
+                <h3 id="viewPromotionTitle"></h3>
+                <p id="viewPromotionDescription"></p>
+                <div class="view-promotion-branches" id="viewPromotionBranches"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Delete Promotion</h2>
+            <p>Are you sure you want to delete this promotion?</p>
+            <div class="modal-buttons">
+                <button class="cancel-btn">Cancel</button>
+                <button class="delete-btn">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Popup Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content success-modal">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>Promotion Posted!</h2>
+            <p>Your promotion has been successfully added.</p>
+            <button class="close-success-btn">Close</button>
+        </div>
+    </div>
+
+    <!-- Delete Success Modal -->
+    <div class="modal" id="deleteSuccessModal">
+        <div class="modal-content success-modal">
+            <div class="success-icon">
+                <i class="fas fa-trash-alt"></i>
+            </div>
+            <h2>Promotion Deleted!</h2>
+            <p>The promotion has been successfully removed.</p>
+            <button class="close-delete-success-btn">Close</button>
+        </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html> 
