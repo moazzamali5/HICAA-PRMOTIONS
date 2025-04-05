@@ -86,7 +86,7 @@ function displayPromotions(filter = 'all') {
             </div>
         `;
 
-        // Add click event for viewing promotion details
+        // Update click event for viewing promotion details
         card.addEventListener('click', (e) => {
             // Don't show details if clicking delete icon
             if (!e.target.classList.contains('delete-icon')) {
@@ -97,7 +97,7 @@ function displayPromotions(filter = 'all') {
                 viewPromotionBranches.innerHTML = promo.branches
                     .map(branch => `<span class="branch-tag">${branch.toUpperCase()}</span>`)
                     .join('');
-                viewPromotionModal.style.display = 'block';
+                showModal(viewPromotionModal);
             }
         });
 
@@ -149,9 +149,32 @@ filterButtons.forEach(button => {
 // Modal functionality
 addPromotionBtn.addEventListener('click', () => {
     showPasswordModal(() => {
-        promotionModal.style.display = 'block';
+        showModal(promotionModal);
     });
 });
+
+// Close modals when clicking outside or pressing back button
+window.addEventListener('click', (e) => {
+    if (e.target.classList.contains('modal')) {
+        e.target.style.display = 'none';
+    }
+});
+
+// Handle back button for modals
+window.addEventListener('popstate', () => {
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        if (modal.style.display === 'block') {
+            modal.style.display = 'none';
+        }
+    });
+});
+
+// Update modal display to handle history
+function showModal(modal) {
+    modal.style.display = 'block';
+    history.pushState({ modal: true }, '');
+}
 
 // Close modals
 closeBtns.forEach(btn => {
