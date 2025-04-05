@@ -86,10 +86,11 @@ function displayPromotions(filter = 'all') {
             </div>
         `;
 
-        // Update click event for viewing promotion details
+        // Add click event for viewing promotion details
         card.addEventListener('click', (e) => {
             // Don't show details if clicking delete icon
             if (!e.target.classList.contains('delete-icon')) {
+                // Set modal content
                 viewPromotionImage.src = promo.imageUrl;
                 viewPromotionHeading.textContent = promo.heading;
                 viewPromotionTitle.textContent = promo.title;
@@ -97,7 +98,10 @@ function displayPromotions(filter = 'all') {
                 viewPromotionBranches.innerHTML = promo.branches
                     .map(branch => `<span class="branch-tag">${branch.toUpperCase()}</span>`)
                     .join('');
-                showModal(viewPromotionModal);
+
+                // Show modal
+                document.body.classList.add('modal-open');
+                viewPromotionModal.style.display = 'block';
             }
         });
 
@@ -153,10 +157,50 @@ addPromotionBtn.addEventListener('click', () => {
     });
 });
 
-// Close modals when clicking outside or pressing back button
+// Update modal display to handle history and animation
+function showModal(modal) {
+    document.body.classList.add('modal-open');
+    modal.style.display = 'block';
+    // Give browser time to register the display change before adding active class
+    requestAnimationFrame(() => {
+        modal.classList.add('active');
+        if (modal === viewPromotionModal) {
+            modal.style.visibility = 'visible';
+            modal.style.opacity = '1';
+            viewPromotionModal.classList.add('active');
+        }
+    });
+    history.pushState({ modal: true }, '');
+}
+
+function hideModal(modal) {
+    document.body.classList.remove('modal-open');
+    if (modal === viewPromotionModal) {
+        modal.classList.remove('active');
+        viewPromotionModal.classList.remove('active');
+        modal.style.visibility = 'hidden';
+        modal.style.opacity = '0';
+        // Wait for animation to finish before hiding
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300);
+    } else {
+        modal.style.display = 'none';
+    }
+}
+
+// Update close handlers
+closeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        hideModal(btn.closest('.modal'));
+    });
+});
+
+// Close view modal when clicking outside
 window.addEventListener('click', (e) => {
     if (e.target.classList.contains('modal')) {
         e.target.style.display = 'none';
+        document.body.classList.remove('modal-open');
     }
 });
 
@@ -165,54 +209,9 @@ window.addEventListener('popstate', () => {
     const modals = document.querySelectorAll('.modal');
     modals.forEach(modal => {
         if (modal.style.display === 'block') {
-            modal.style.display = 'none';
+            hideModal(modal);
         }
     });
-});
-
-// Update modal display to handle history
-function showModal(modal) {
-    modal.style.display = 'block';
-    history.pushState({ modal: true }, '');
-}
-
-// Close modals
-closeBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        promotionModal.style.display = 'none';
-        passwordModal.style.display = 'none';
-        deleteModal.style.display = 'none';
-        successModal.style.display = 'none';
-        deleteSuccessModal.style.display = 'none';
-    });
-});
-
-closeSuccessBtn.addEventListener('click', () => {
-    successModal.style.display = 'none';
-    window.location.reload();
-});
-
-closeDeleteSuccessBtn.addEventListener('click', () => {
-    deleteSuccessModal.style.display = 'none';
-});
-
-window.addEventListener('click', (e) => {
-    if (e.target === promotionModal) {
-        promotionModal.style.display = 'none';
-    }
-    if (e.target === passwordModal) {
-        passwordModal.style.display = 'none';
-    }
-    if (e.target === deleteModal) {
-        deleteModal.style.display = 'none';
-    }
-    if (e.target === successModal) {
-        successModal.style.display = 'none';
-        window.location.reload();
-    }
-    if (e.target === deleteSuccessModal) {
-        deleteSuccessModal.style.display = 'none';
-    }
 });
 
 // Handle form submission
@@ -298,20 +297,11 @@ deleteBtn.addEventListener('click', async () => {
     }
 });
 
-// Close view modal when clicking outside
-window.addEventListener('click', (e) => {
-    if (e.target === viewPromotionModal) {
-        // Only close if clicking directly on the modal background
-        if (e.target === e.currentTarget) {
-            viewPromotionModal.style.display = 'none';
-        }
-    }
-});
-
-// Add close button for view modal
+// Update view modal close button handler
 const viewModalCloseBtn = viewPromotionModal.querySelector('.close-btn');
 viewModalCloseBtn.addEventListener('click', () => {
     viewPromotionModal.style.display = 'none';
+    document.body.classList.remove('modal-open');
 });
 
 // Initialize the application
