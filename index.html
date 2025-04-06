@@ -10,16 +10,35 @@
 </head>
 <body>
     <div class="background"></div>
+    
+    <!-- Area Selection Modal -->
+    <div class="area-selection-modal" id="areaModal">
+        <div class="area-selection-content">
+            <h2>Select Your Area</h2>
+            <div class="area-buttons">
+                <button class="area-btn" data-area="kuching">KUCHING</button>
+                <button class="area-btn" data-area="miri">MIRI</button>
+                <button class="area-btn" data-area="sibu">SIBU</button>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <header>
-            <h1 class="welcome-text">HICAA BILLBOARD</h1>
+            <h1 class="welcome-text">Welcome to Hicca Promotions</h1>
             <p class="subtitle">Discover amazing deals and offers</p>
+            <div class="selected-area" id="selectedArea" style="display: none;">
+                <span id="currentArea"></span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
         </header>
-
-        
 
         <div class="promotions-grid" id="promotionsGrid">
             <!-- Promotions will be dynamically added here -->
+        </div>
+
+        <div class="filter-container" id="filterContainer">
+            <!-- Branch filters will be dynamically added here -->
         </div>
 
         <button class="add-promotion-btn" id="addPromotionBtn">
@@ -49,37 +68,42 @@
             <h2>Add New Promotion</h2>
             <form id="promotionForm">
                 <div class="form-group">
-                    <label for="promotionImage">Promotion Image</label>
+                    <label for="promotionImage">Image:</label>
                     <input type="file" id="promotionImage" accept="image/*" required>
                 </div>
                 <div class="form-group">
-                    <label for="promotionHeading">Promotion Heading</label>
-                    <input type="text" id="promotionHeading" required placeholder="Enter promotion heading">
+                    <label for="promotionHeading">Heading:</label>
+                    <input type="text" id="promotionHeading" required>
                 </div>
                 <div class="form-group">
-                    <label for="promotionTitle">Promotion Title</label>
-                    <input type="text" id="promotionTitle" required placeholder="Enter a short title">
+                    <label for="promotionTitle">Title:</label>
+                    <input type="text" id="promotionTitle" required>
                 </div>
                 <div class="form-group">
-                    <label for="promotionDescription">Promotion Description</label>
-                    <textarea id="promotionDescription" required placeholder="Enter full promotion details"></textarea>
+                    <label for="promotionDescription">Description:</label>
+                    <textarea id="promotionDescription" required></textarea>
                 </div>
                 <div class="form-group">
-                    <label>Branches</label>
-                    <div class="branch-checkboxes">
-                        <label><input type="checkbox" name="branch" value="icom"> ICOM, KUCHING</label>
-                        <label><input type="checkbox" name="branch" value="batu-kawa"> BATU KAWA, KUCHING</label>
-                        <label><input type="checkbox" name="branch" value="eion-mall"> AION MALL, KUCHING</label>
-                        <label><input type="checkbox" name="branch" value="emporium"> EMPORIUM, KUCHING</label>
-                        <label><input type="checkbox" name="branch" value="permaisuri"> PERMAISURI, MIRI</label>
-                        <label><input type="checkbox" name="branch" value="riam"> RIAM, MIRI</label>
-                        <label><input type="checkbox" name="branch" value="town-square"> TOWN SQUARE, SIBU</label>
-                        <label><input type="checkbox" name="branch" value="deltamall"> BESIDE DELTAMALL, SIBU</label>
-                        <label><input type="checkbox" name="branch" value="star-megamall"> STAR MEGAMALL, SIBU</label>
-                        <label><input type="checkbox" name="branch" value="unicity"> UNICITY, SIBU</label>
+                    <label>Areas:</label>
+                    <div class="checkbox-group areas-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="area" value="KUCHING"> KUCHING
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="area" value="MIRI"> MIRI
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="area" value="SIBU"> SIBU
+                        </label>
                     </div>
                 </div>
-                <button type="submit" class="submit-btn">Post Promotion</button>
+                <div class="form-group">
+                    <label>Branches:</label>
+                    <div id="branchesContainer">
+                        <p>Please select at least one area first</p>
+                    </div>
+                </div>
+                <button type="submit">Add Promotion</button>
             </form>
         </div>
     </div>
@@ -135,20 +159,6 @@
             <p>The promotion has been successfully removed.</p>
             <button class="close-delete-success-btn">Close</button>
         </div>
-    </div>
-
-    <div class="filter-container">
-        <button class="filter-btn active" data-filter="all">ALL</button>
-        <button class="filter-btn" data-filter="icom">ICOM SQUARE,KUCHING</button>
-        <button class="filter-btn" data-filter="batu-kawa">BATU KAWA,KUCHING</button>
-        <button class="filter-btn" data-filter="eion-mall">AIMAN MALL,KUCHING</button>
-        <button class="filter-btn" data-filter="emporium">EMPORIUM, KUCHING</button>
-        <button class="filter-btn" data-filter="permaisuri">PERMAISURI, MIRI</button>
-        <button class="filter-btn" data-filter="riam">RIAM, MIRI</button>
-        <button class="filter-btn" data-filter="town-square">TOWN SQUARE, SIBU</button>
-        <button class="filter-btn" data-filter="deltamall">BESIDE DELTAMALL, SIBU</button>
-        <button class="filter-btn" data-filter="star-megamall">STAR MEGAMALL, SIBU</button>
-        <button class="filter-btn" data-filter="unicity">UNICITY, SIBU</button>
     </div>
 
     <script type="module" src="script.js"></script>

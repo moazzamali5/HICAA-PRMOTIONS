@@ -13,6 +13,26 @@ import {
 // Admin password (in a real application, this should be handled server-side)
 const ADMIN_PASSWORD = "bananacheese"; // You can change this password
 
+// Area-specific filters
+const areaFilters = {
+    kuching: {
+        'icom': 'ICOM SQUARE',
+        'batu-kawa': 'BATU KAWA',
+        'eion-mall': 'EION MALL',
+        'emporium': 'EMPORIUM'
+    },
+    miri: {
+        'permaisuri': 'PERMAISURI',
+        'riam': 'RIAM'
+    },
+    sibu: {
+        'town-square': 'TOWN SQUARE',
+        'deltamall': 'BESIDE DELTAMALL',
+        'star-megamall': 'STAR MEGAMALL',
+        'unicity': 'UNICITY'
+    }
+};
+
 // DOM Elements
 const promotionsGrid = document.getElementById('promotionsGrid');
 const filterButtons = document.querySelectorAll('.filter-btn');
@@ -37,6 +57,13 @@ const viewPromotionHeading = document.getElementById('viewPromotionHeading');
 const viewPromotionTitle = document.getElementById('viewPromotionTitle');
 const viewPromotionDescription = document.getElementById('viewPromotionDescription');
 const viewPromotionBranches = document.getElementById('viewPromotionBranches');
+
+// Add area modal elements
+const areaModal = document.getElementById('areaModal');
+const selectedArea = document.getElementById('selectedArea');
+const currentArea = document.getElementById('currentArea');
+const filterContainer = document.getElementById('filterContainer');
+let currentAreaValue = localStorage.getItem('selectedArea');
 
 let currentPromotionId = null;
 let isAdminVerified = false;
@@ -65,9 +92,26 @@ function initializePromotions() {
 function displayPromotions(filter = 'all') {
     promotionsGrid.innerHTML = '';
     
+    // First filter by area
+    let areaFilteredPromotions = promotions.filter(promo => {
+        return promo.areas ? promo.areas.includes(currentAreaValue.toUpperCase()) : 
+               promo.area === currentAreaValue.toUpperCase(); // For backward compatibility
+    });
+
+    // Then filter by branch if needed
     const filteredPromotions = filter === 'all' 
-        ? promotions 
-        : promotions.filter(promo => promo.branches.includes(filter));
+        ? areaFilteredPromotions 
+        : areaFilteredPromotions.filter(promo => {
+            return promo.branches.some(branch => {
+                // Get the branch name from areaFilters for comparison
+                const selectedArea = currentAreaValue.toLowerCase();
+                const filterText = areaFilters[selectedArea][filter];
+                
+                // Compare with the full branch name (including area)
+                const expectedBranchName = `${filterText}, ${currentAreaValue.toUpperCase()}`;
+                return branch === expectedBranchName;
+            });
+        });
 
     filteredPromotions.forEach(promo => {
         const card = document.createElement('div');
@@ -80,7 +124,7 @@ function displayPromotions(filter = 'all') {
                 <p>${promo.title}</p>
                 <div class="promotion-branches">
                     ${promo.branches.map(branch => `
-                        <span class="branch-tag">${branch.toUpperCase()}</span>
+                        <span class="branch-tag">${branch}</span>
                     `).join('')}
                 </div>
             </div>
@@ -96,7 +140,7 @@ function displayPromotions(filter = 'all') {
                 viewPromotionTitle.textContent = promo.title;
                 viewPromotionDescription.textContent = promo.description;
                 viewPromotionBranches.innerHTML = promo.branches
-                    .map(branch => `<span class="branch-tag">${branch.toUpperCase()}</span>`)
+                    .map(branch => `<span class="branch-tag">${branch}</span>`)
                     .join('');
 
                 // Show modal
@@ -118,6 +162,17 @@ function displayPromotions(filter = 'all') {
             });
         });
     });
+
+    // Show no results message if needed
+    if (filteredPromotions.length === 0) {
+        const noResults = document.createElement('div');
+        noResults.className = 'no-results';
+        noResults.innerHTML = `
+            <h3>No promotions found</h3>
+            <p>There are currently no promotions for this ${filter === 'all' ? 'area' : 'branch'}.</p>
+        `;
+        promotionsGrid.appendChild(noResults);
+    }
 }
 
 // Show password modal and execute callback on success
@@ -214,7 +269,38 @@ window.addEventListener('popstate', () => {
     });
 });
 
-// Handle form submission
+// Add area selection change handler
+function handleAreaChange() {
+    const areaCheckboxes = document.querySelectorAll('input[name="area"]:checked');
+    const branchesContainer = document.getElementById('branchesContainer');
+    
+    if (areaCheckboxes.length > 0) {
+        // Create branch checkboxes for all selected areas
+        const branchGroups = Array.from(areaCheckboxes).map(checkbox => {
+            const area = checkbox.value;
+            const areaFiltersObj = areaFilters[area.toLowerCase()];
+            return `
+                <div class="branch-area-group">
+                    <h4>${area}</h4>
+                    <div class="checkbox-group">
+                        ${Object.entries(areaFiltersObj).map(([value, text]) => `
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="branch" data-area="${area}" value="${value}">
+                                ${text}
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        });
+        
+        branchesContainer.innerHTML = branchGroups.join('');
+    } else {
+        branchesContainer.innerHTML = '<p>Please select at least one area first</p>';
+    }
+}
+
+// Update form submission
 promotionForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -222,8 +308,15 @@ promotionForm.addEventListener('submit', async (e) => {
     const heading = document.getElementById('promotionHeading').value.trim();
     const title = document.getElementById('promotionTitle').value.trim();
     const description = document.getElementById('promotionDescription').value.trim();
-    const branches = Array.from(document.querySelectorAll('input[name="branch"]:checked'))
-        .map(checkbox => checkbox.value);
+    const selectedAreas = Array.from(document.querySelectorAll('input[name="area"]:checked')).map(cb => cb.value);
+    const branchCheckboxes = document.querySelectorAll('input[name="branch"]:checked');
+    
+    // Get the full branch names with their respective areas
+    const branches = Array.from(branchCheckboxes).map(checkbox => {
+        const branchName = checkbox.parentElement.textContent.trim();
+        const area = checkbox.dataset.area;
+        return `${branchName}, ${area}`;
+    });
 
     // Validate all fields
     if (!imageFile) {
@@ -240,6 +333,10 @@ promotionForm.addEventListener('submit', async (e) => {
     }
     if (!description) {
         alert('Please enter a promotion description');
+        return;
+    }
+    if (selectedAreas.length === 0) {
+        alert('Please select at least one area');
         return;
     }
     if (branches.length === 0) {
@@ -262,6 +359,7 @@ promotionForm.addEventListener('submit', async (e) => {
             heading,
             title,
             description,
+            areas: selectedAreas,
             branches,
             createdAt: Date.now()
         });
@@ -270,6 +368,7 @@ promotionForm.addEventListener('submit', async (e) => {
         successModal.style.display = 'block';
         promotionModal.style.display = 'none';
         promotionForm.reset();
+        document.getElementById('branchesContainer').innerHTML = '<p>Please select at least one area first</p>';
     } catch (error) {
         console.error('Error adding promotion:', error);
         alert('Error adding promotion. Please try again.');
@@ -304,5 +403,90 @@ viewModalCloseBtn.addEventListener('click', () => {
     document.body.classList.remove('modal-open');
 });
 
+// Initialize area selection
+function initializeArea() {
+    const hasVisited = localStorage.getItem('hasVisited');
+    
+    if (!hasVisited || !currentAreaValue) {
+        localStorage.setItem('hasVisited', 'true');
+        areaModal.classList.add('show');
+        areaModal.style.display = 'flex';
+    } else {
+        showAreaContent(currentAreaValue);
+    }
+}
+
+// Show content for selected area
+function showAreaContent(area) {
+    currentAreaValue = area;
+    localStorage.setItem('selectedArea', area);
+    currentArea.textContent = area.toUpperCase();
+    selectedArea.style.display = 'inline-flex';
+    updateFilters(area);
+    filterContainer.classList.add('show');
+    areaModal.classList.remove('show');
+    areaModal.style.display = 'none';
+}
+
+// Update filters based on selected area
+function updateFilters(area) {
+    const filters = areaFilters[area.toLowerCase()];
+    const filterBtns = document.createElement('div');
+    filterBtns.innerHTML = `
+        <button class="filter-btn active" data-filter="all">ALL BRANCHES</button>
+        ${Object.entries(filters).map(([value, text]) => `
+            <button class="filter-btn" data-filter="${value}">${text}</button>
+        `).join('')}
+    `;
+    
+    filterContainer.innerHTML = filterBtns.innerHTML;
+    addFilterListeners();
+    displayPromotions('all'); // Refresh promotions for the new area
+}
+
+// Add event listeners for area selection
+document.querySelectorAll('.area-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        showAreaContent(btn.dataset.area);
+    });
+});
+
+// Allow changing area
+selectedArea.addEventListener('click', () => {
+    areaModal.classList.add('show');
+    areaModal.style.display = 'flex';
+});
+
+// Add filter button listeners
+function addFilterListeners() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            displayPromotions(button.dataset.filter);
+        });
+    });
+}
+
+// Success modal close handlers
+closeSuccessBtn.addEventListener('click', () => {
+    successModal.style.display = 'none';
+    location.reload();
+});
+
+closeDeleteSuccessBtn.addEventListener('click', () => {
+    deleteSuccessModal.style.display = 'none';
+});
+
 // Initialize the application
-initializePromotions(); 
+document.addEventListener('DOMContentLoaded', () => {
+    // Add event listeners to area checkboxes
+    const areaCheckboxes = document.querySelectorAll('input[name="area"]');
+    areaCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', handleAreaChange);
+    });
+
+    initializeArea();
+    initializePromotions();
+}); 
