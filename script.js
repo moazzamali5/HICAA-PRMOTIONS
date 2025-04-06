@@ -18,7 +18,7 @@ const areaFilters = {
     kuching: {
         'icom': 'ICOM SQUARE',
         'batu-kawa': 'BATU KAWA',
-        'eion-mall': 'AIMAN MALL',
+        'aiman-mall': 'AIMAN MALL',
         'emporium': 'EMPORIUM'
     },
     miri: {
